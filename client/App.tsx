@@ -9,6 +9,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import Index from "./pages/Index";
 import Placeholder from "./pages/Placeholder";
+import MarketDetail from "./pages/MarketDetail";
+import Careers from "./pages/Careers";
+import Access from "./pages/Access";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,36 +25,10 @@ const App = () => (
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Index />} />
-            <Route
-              path="/markets/commodities"
-              element={
-                <Placeholder title="Commodities" />
-              }
-            />
-            <Route
-              path="/markets/foreign-exchange"
-              element={
-                <Placeholder title="Foreign Exchange" />
-              }
-            />
-            <Route
-              path="/markets/fixed-income"
-              element={
-                <Placeholder title="Fixed Income" />
-              }
-            />
-            <Route
-              path="/markets/primary-markets"
-              element={
-                <Placeholder title="Primary Markets" />
-              }
-            />
-            <Route path="/careers" element={<Placeholder title="Careers" />} />
-            <Route path="/sign-in" element={<Placeholder title="Sign In" />} />
-            <Route
-              path="/online-access"
-              element={<Placeholder title="Set Up Online Access" />}
-            />
+            <Route path="/markets/:market" element={<MarketDetail />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/sign-in" element={<Access />} />
+            <Route path="/online-access" element={<Access setup />} />
             <Route
               path="/legal/terms"
               element={<Placeholder title="Terms & Conditions" />}

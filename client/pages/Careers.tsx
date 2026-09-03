@@ -1,0 +1,17 @@
+import { Link } from "react-router-dom";
+import { ArrowLeft, ArrowUpRight, Globe2, HeartHandshake, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+const principles = [
+  { icon: Globe2, title: "Think globally", text: "Work alongside colleagues and clients across the world's most important markets." },
+  { icon: TrendingUp, title: "Grow with purpose", text: "Build expertise through meaningful responsibility, mentorship and continuous learning." },
+  { icon: HeartHandshake, title: "Work as one", text: "Bring your perspective to a collaborative team that values trust and high standards." },
+];
+
+export default function Careers() {
+  return <div>
+    <section className="bg-brand-navy py-20 lg:py-28"><div className="container"><Link to="/" className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-brand-gold"><ArrowLeft className="h-4 w-4" /> Back to overview</Link><div className="mt-16 max-w-3xl"><span className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-gold">Careers</span><h1 className="mt-4 font-display text-6xl font-semibold leading-[1.05] text-white sm:text-7xl">Your perspective<br /><span className="text-brand-gold">moves markets.</span></h1><p className="mt-7 max-w-xl text-lg leading-relaxed text-white/70">Join a global team of talented, self-driven professionals building the future of specialist financial markets.</p><Button asChild size="lg" className="mt-9 bg-brand-gold text-brand-navyDark hover:bg-brand-goldLight"><Link to="/online-access">Search opportunities <ArrowUpRight className="h-4 w-4" /></Link></Button></div></div></section>
+    <section className="container py-20 lg:py-28"><div className="max-w-2xl"><span className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-gold">Life at ICBC Standard Bank</span><h2 className="mt-3 font-display text-4xl font-semibold sm:text-5xl">Make an impact from day one</h2><p className="mt-5 text-lg leading-relaxed text-muted-foreground">We give talented people the flexibility, rewards and freedom to grow their expertise, seek new opportunities and realise their potential. Here, your ideas travel further.</p></div><div className="mt-14 grid gap-5 md:grid-cols-3">{principles.map(({ icon: Icon, title, text }) => <div key={title} className="rounded-lg border border-border p-7"><Icon className="h-6 w-6 text-brand-gold" /><h3 className="mt-6 font-display text-2xl font-semibold">{title}</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p></div>)}</div></section>
+    <section className="bg-secondary py-16"><div className="container flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="font-display text-3xl font-semibold">Ready for your next chapter?</h2><p className="mt-2 text-muted-foreground">Explore current vacancies and find your place with us.</p></div><Button asChild className="w-fit bg-brand-navy hover:bg-brand-navy/90"><Link to="/online-access">View open roles <ArrowUpRight className="h-4 w-4" /></Link></Button></div></section>
+  </div>;
+}
