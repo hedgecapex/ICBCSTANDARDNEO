@@ -1,17 +1,36 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowRight, LogOut, RefreshCw, WalletCards } from "lucide-react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { ArrowRight, Download, LogOut, RefreshCw, WalletCards } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { DashboardResponse } from "@shared/api";
 
+const demoData: DashboardResponse = {
+  user: { id: "demo", email: "executive@icbcstandard.example", companyName: "Hedgecapex Holdings" },
+  accounts: [
+    { accountNumber: "ICBC-4821 9034", currency: "USD", availableBalance: "248,520.00", accountType: "Operating account" },
+    { accountNumber: "ICBC-1950 7712", currency: "EUR", availableBalance: "86,410.75", accountType: "Reserve account" },
+  ],
+};
+
+const transactions = [
+  { merchant: "Global Markets Settlement", date: "20 Apr 2026", amount: "+$42,800.00", positive: true },
+  { merchant: "Meridian Logistics Ltd.", date: "18 Apr 2026", amount: "−$8,450.00", positive: false },
+  { merchant: "FX Conversion · EUR/USD", date: "16 Apr 2026", amount: "+$12,240.50", positive: true },
+  { merchant: "Office & Operations", date: "12 Apr 2026", amount: "−$2,180.00", positive: false },
+];
+
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [data, setData] = useState<DashboardResponse | null>(null);
+  const [searchParams] = useSearchParams();
+  const demo = searchParams.get("demo") === "1";
+  const [data, setData] = useState<DashboardResponse | null>(demo ? demoData : null);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!demo);
 
   const loadDashboard = async () => {
+    if (demo) return;
     setLoading(true);
+    setError("");
     try {
       const response = await fetch("/api/auth/dashboard", { credentials: "include" });
       if (response.status === 401) return navigate("/sign-in");
@@ -28,13 +47,19 @@ export default function Dashboard() {
   useEffect(() => { void loadDashboard(); }, []);
 
   const logout = async () => {
-    await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
-    navigate("/sign-in");
+    if (!demo) await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+    navigate("/");
   };
 
   if (loading) return <div className="container flex min-h-[60vh] items-center justify-center text-muted-foreground">Loading your secure dashboard…</div>;
   if (error) return <div className="container flex min-h-[60vh] flex-col items-center justify-center text-center"><p className="text-sm text-red-700">{error}</p><Button onClick={() => void loadDashboard()} className="mt-5 bg-brand-navy">Try again</Button></div>;
   if (!data) return null;
 
-  return <div className="bg-secondary"><div className="container py-12 lg:py-20"><div className="flex flex-col justify-between gap-5 border-b border-border pb-8 sm:flex-row sm:items-end"><div><p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-gold">Secure client portal</p><h1 className="mt-3 font-display text-4xl font-semibold text-brand-navy sm:text-5xl">Good to see you{data.user.companyName ? `, ${data.user.companyName}` : ""}.</h1><p className="mt-2 text-sm text-muted-foreground">{data.user.email}</p></div><Button variant="outline" onClick={() => void logout()} className="w-fit border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white"><LogOut className="h-4 w-4" /> Sign out</Button></div><div className="mt-10 flex items-center justify-between"><h2 className="font-display text-2xl font-semibold">Accounts</h2><Button variant="ghost" onClick={() => void loadDashboard()} className="text-brand-navy"><RefreshCw className="h-4 w-4" /> Refresh</Button></div><div className="mt-5 grid gap-5 lg:grid-cols-2">{data.accounts.map((account) => <div key={account.accountNumber} className="rounded-lg bg-brand-navy p-7 text-white shadow-lg shadow-brand-navy/10"><div className="flex items-start justify-between"><div className="flex h-10 w-10 items-center justify-center rounded-md bg-white/10 text-brand-gold"><WalletCards className="h-5 w-5" /></div><span className="text-xs uppercase tracking-[0.15em] text-white/50">{account.currency}</span></div><p className="mt-10 text-sm text-white/60">{account.accountType}</p><p className="mt-1 font-display text-4xl font-semibold">{account.availableBalance}</p><p className="mt-3 text-xs tracking-wider text-white/50">{account.accountNumber}</p></div>)}</div><div className="mt-10 grid gap-5 md:grid-cols-3"><Link to="/markets/foreign-exchange" className="rounded-lg border border-border bg-background p-6 hover:border-brand-gold"><h3 className="font-semibold">FX & markets</h3><p className="mt-2 text-sm text-muted-foreground">Explore our latest market capabilities.</p><ArrowRight className="mt-5 h-4 w-4 text-brand-gold" /></Link><Link to="/careers" className="rounded-lg border border-border bg-background p-6 hover:border-brand-gold"><h3 className="font-semibold">Relationship support</h3><p className="mt-2 text-sm text-muted-foreground">Connect with our global client teams.</p><ArrowRight className="mt-5 h-4 w-4 text-brand-gold" /></Link><div className="rounded-lg border border-border bg-background p-6"><h3 className="font-semibold">Need assistance?</h3><p className="mt-2 text-sm text-muted-foreground">Call +1 203 145 5000 for client support.</p></div></div></div></div>;
+  return <div className="bg-secondary"><div className="container py-12 lg:py-20">
+    <div className="flex flex-col justify-between gap-5 border-b border-border pb-8 sm:flex-row sm:items-end"><div><div className="flex flex-wrap items-center gap-3"><p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-gold">Client portal</p>{demo && <span className="rounded-full bg-brand-gold/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-brand-navy">Demo mode</span>}</div><h1 className="mt-3 font-display text-4xl font-semibold text-brand-navy sm:text-5xl">Good to see you, {data.user.companyName}.</h1><p className="mt-2 text-sm text-muted-foreground">{data.user.email}</p></div><Button variant="outline" onClick={() => void logout()} className="w-fit border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white"><LogOut className="h-4 w-4" /> {demo ? "Exit demo" : "Sign out"}</Button></div>
+    {demo && <div className="mt-7 border border-brand-gold/30 bg-brand-gold/10 px-5 py-4 text-sm text-brand-navy">You are viewing sample account data. Connect PostgreSQL later to replace this with real, protected account information.</div>}
+    <div className="mt-10 flex items-center justify-between"><h2 className="font-display text-2xl font-semibold">Accounts</h2><Button variant="ghost" onClick={() => void loadDashboard()} className="text-brand-navy"><RefreshCw className="h-4 w-4" /> Refresh</Button></div>
+    <div className="mt-5 grid gap-5 lg:grid-cols-2">{data.accounts.map((account) => <div key={account.accountNumber} className="rounded-lg bg-brand-navy p-7 text-white shadow-lg shadow-brand-navy/10"><div className="flex items-start justify-between"><div className="flex h-10 w-10 items-center justify-center rounded-md bg-white/10 text-brand-gold"><WalletCards className="h-5 w-5" /></div><span className="text-xs uppercase tracking-[0.15em] text-white/50">{account.currency}</span></div><p className="mt-10 text-sm text-white/60">{account.accountType}</p><p className="mt-1 font-display text-4xl font-semibold">{account.availableBalance}</p><p className="mt-3 text-xs tracking-wider text-white/50">{account.accountNumber}</p></div>)}</div>
+    <div className="mt-10 grid gap-6 lg:grid-cols-[1.25fr_0.75fr]"><div className="rounded-lg border border-border bg-background"><div className="flex items-center justify-between border-b border-border px-6 py-5"><h2 className="font-display text-2xl font-semibold">Recent activity</h2><Button variant="ghost" size="sm" className="text-brand-navy"><Download className="h-4 w-4" /> Statement</Button></div><div className="divide-y divide-border">{transactions.map((transaction) => <div key={`${transaction.merchant}-${transaction.date}`} className="flex items-center justify-between gap-4 px-6 py-5"><div><p className="text-sm font-medium">{transaction.merchant}</p><p className="mt-1 text-xs text-muted-foreground">{transaction.date}</p></div><span className={`text-sm font-semibold ${transaction.positive ? "text-emerald-700" : "text-foreground"}`}>{transaction.amount}</span></div>)}</div></div><div className="rounded-lg border border-border bg-background p-6"><h2 className="font-display text-2xl font-semibold">Quick actions</h2><div className="mt-5 space-y-3"><Link to="/markets/foreign-exchange" className="flex items-center justify-between border border-border px-4 py-4 text-sm hover:border-brand-gold">Explore FX markets <ArrowRight className="h-4 w-4 text-brand-gold" /></Link><Link to="/careers" className="flex items-center justify-between border border-border px-4 py-4 text-sm hover:border-brand-gold">Contact your team <ArrowRight className="h-4 w-4 text-brand-gold" /></Link><div className="border border-border px-4 py-4 text-sm"><p className="font-medium">Client support</p><p className="mt-1 text-xs text-muted-foreground">+1 203 145 5000</p></div></div></div></div>
+  </div></div>;
 }
