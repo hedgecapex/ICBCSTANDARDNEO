@@ -20,6 +20,9 @@ export interface AccountSummary {
   currency: string;
   availableBalance: string;
   accountType: string;
+  assetClass?: "cash" | "crypto" | "stablecoin" | "metal" | "diamond";
+  quantity?: string;
+  unit?: string;
 }
 
 export interface DashboardResponse {
