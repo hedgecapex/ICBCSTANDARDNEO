@@ -12,6 +12,7 @@ import Placeholder from "./pages/Placeholder";
 import MarketDetail from "./pages/MarketDetail";
 import Careers from "./pages/Careers";
 import Access from "./pages/Access";
+import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/careers" element={<Careers />} />
             <Route path="/sign-in" element={<Access />} />
             <Route path="/online-access" element={<Access setup />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route
               path="/legal/terms"
               element={<Placeholder title="Terms & Conditions" />}

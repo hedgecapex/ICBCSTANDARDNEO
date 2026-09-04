@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Globe2, HelpCircle, LockKeyhole, Search, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,9 +8,29 @@ interface AccessProps { setup?: boolean }
 type AccessMode = "login" | "register";
 
 export default function Access({ setup = false }: AccessProps) {
+  const navigate = useNavigate();
   const [mode, setMode] = useState<AccessMode>(setup ? "register" : "login");
   const [submitted, setSubmitted] = useState(false);
-  const submit = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); setSubmitted(true); };
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError("");
+    setLoading(true);
+    const form = new FormData(event.currentTarget);
+    const payload = { email: String(form.get("email") ?? ""), password: String(form.get("password") ?? ""), companyName: String(form.get("company") ?? "") || undefined };
+    try {
+      const response = await fetch(`/api/auth/${mode === "login" ? "login" : "register"}`, { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(payload) });
+      const result = await response.json() as { message?: string };
+      if (!response.ok) throw new Error(result.message ?? "Something went wrong.");
+      if (mode === "login") navigate("/dashboard");
+      else setSubmitted(true);
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "Unable to complete the request.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="bg-[#d8d8d8] text-[#292929]">
@@ -40,7 +60,7 @@ export default function Access({ setup = false }: AccessProps) {
                 <div className="mt-8 grid gap-4 sm:grid-cols-2"><button type="button" onClick={() => { setMode("login"); setSubmitted(false); }} className={`border p-5 text-left transition-colors ${mode === "login" ? "border-[#fa504b] bg-[#fff5f4]" : "border-[#ddd] hover:border-[#fa504b]"}`}><LockKeyhole className="h-6 w-6 text-[#bc0021]" /><h2 className="mt-4 font-semibold">Sign in</h2><p className="mt-1 text-xs leading-relaxed text-[#777]">Existing clients can access their secure banking portal.</p></button><button type="button" onClick={() => { setMode("register"); setSubmitted(false); }} className={`border p-5 text-left transition-colors ${mode === "register" ? "border-[#fa504b] bg-[#fff5f4]" : "border-[#ddd] hover:border-[#fa504b]"}`}><ShieldCheck className="h-6 w-6 text-[#bc0021]" /><h2 className="mt-4 font-semibold">Register</h2><p className="mt-1 text-xs leading-relaxed text-[#777]">Set up online access for your business or personal account.</p></button></div>
                 <div className="mt-8 border-t border-[#e5e5e5] pt-6"><h2 className="text-sm font-bold">Choose your banking service</h2><div className="mt-4 grid gap-3 sm:grid-cols-2"><a href="https://mybank.icbc.com.cn/icbc/enperbank/index.jsp" target="_blank" rel="noreferrer" className="flex items-center justify-between border border-[#ddd] px-4 py-4 text-sm font-medium hover:border-[#fa504b] hover:text-[#bc0021]">Personal Banking <ArrowRight className="h-4 w-4" /></a><a href="https://corporbank.icbc.com.cn/icbc/corporbank/logon.jsp?Language=EN_US" target="_blank" rel="noreferrer" className="flex items-center justify-between border border-[#ddd] px-4 py-4 text-sm font-medium hover:border-[#fa504b] hover:text-[#bc0021]">Corporate Banking <ArrowRight className="h-4 w-4" /></a></div></div>
               </div>
-              <div className="h-fit border border-[#ddd] bg-[#f7f7f7] p-6 sm:p-8"><h2 className="text-xl font-semibold">{mode === "login" ? "Welcome back" : "Request online access"}</h2><p className="mt-2 text-xs leading-relaxed text-[#777]">{mode === "login" ? "Use your registered details to securely sign in." : "Our team will contact you to complete your registration."}</p>{submitted ? <div className="mt-7 border border-[#e7b5b2] bg-[#fff5f4] p-4 text-sm leading-relaxed text-[#7d2222]">Thank you. Your request has been received and a member of our team will be in touch shortly.</div> : <form onSubmit={submit} className="mt-7 space-y-4"><div><label htmlFor="email" className="mb-1.5 block text-xs font-semibold">Email address</label><Input id="email" type="email" placeholder="you@company.com" required className="h-10 rounded-none border-[#ccc] bg-white text-sm" /></div>{mode === "register" && <div><label htmlFor="company" className="mb-1.5 block text-xs font-semibold">Company name</label><Input id="company" placeholder="Your company" required className="h-10 rounded-none border-[#ccc] bg-white text-sm" /></div>}{mode === "login" && <div><label htmlFor="password" className="mb-1.5 block text-xs font-semibold">Password</label><Input id="password" type="password" placeholder="Enter your password" required className="h-10 rounded-none border-[#ccc] bg-white text-sm" /></div>}<Button type="submit" className="h-10 w-full rounded-none bg-[#bc0021] text-sm hover:bg-[#9d001c]">{mode === "login" ? "Sign in securely" : "Submit registration"}<ArrowRight className="h-4 w-4" /></Button></form>}<div className="mt-6 flex items-start gap-2 border-t border-[#ddd] pt-5 text-xs text-[#777]"><HelpCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#bc0021]" /><span>{mode === "login" ? "Forgotten your password? Contact Customer Service for assistance." : "Already have online access? Switch to Sign in above."}</span></div></div>
+              <div className="h-fit border border-[#ddd] bg-[#f7f7f7] p-6 sm:p-8"><h2 className="text-xl font-semibold">{mode === "login" ? "Welcome back" : "Request online access"}</h2><p className="mt-2 text-xs leading-relaxed text-[#777]">{mode === "login" ? "Use your registered details to securely sign in." : "Our team will contact you to complete your registration."}</p>{error && <div role="alert" className="mt-7 border border-[#e7b5b2] bg-[#fff5f4] p-4 text-sm leading-relaxed text-[#7d2222]">{error}</div>}{submitted ? <div className="mt-7 border border-[#e7b5b2] bg-[#fff5f4] p-4 text-sm leading-relaxed text-[#7d2222]">Thank you. Your request has been received and a member of our team will be in touch shortly.</div> : <form onSubmit={submit} className="mt-7 space-y-4"><div><label htmlFor="email" className="mb-1.5 block text-xs font-semibold">Email address</label><Input id="email" type="email" placeholder="you@company.com" required className="h-10 rounded-none border-[#ccc] bg-white text-sm" /></div>{mode === "register" && <div><label htmlFor="company" className="mb-1.5 block text-xs font-semibold">Company name</label><Input id="company" placeholder="Your company" required className="h-10 rounded-none border-[#ccc] bg-white text-sm" /></div>}{mode === "login" && <div><label htmlFor="password" className="mb-1.5 block text-xs font-semibold">Password</label><Input id="password" type="password" placeholder="Enter your password" minLength={12} required className="h-10 rounded-none border-[#ccc] bg-white text-sm" /></div>}<Button type="submit" disabled={loading} className="h-10 w-full rounded-none bg-[#bc0021] text-sm hover:bg-[#9d001c]">{loading ? "Please wait…" : mode === "login" ? "Sign in securely" : "Submit registration"}<ArrowRight className="h-4 w-4" /></Button></form>}<div className="mt-6 flex items-start gap-2 border-t border-[#ddd] pt-5 text-xs text-[#777]"><HelpCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#bc0021]" /><span>{mode === "login" ? "Forgotten your password? Contact Customer Service for assistance." : "Already have online access? Switch to Sign in above."}</span></div></div>
             </div>
           </main>
         </div>

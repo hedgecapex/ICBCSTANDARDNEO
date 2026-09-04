@@ -1,13 +1,12 @@
 import "dotenv/config";
 import express from "express";
-import cors from "cors";
 import { handleDemo } from "./routes/demo";
+import { dashboard, login, logout, register } from "./routes/auth";
 
 export function createServer() {
   const app = express();
 
   // Middleware
-  app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
@@ -18,6 +17,10 @@ export function createServer() {
   });
 
   app.get("/api/demo", handleDemo);
+  app.post("/api/auth/register", register);
+  app.post("/api/auth/login", login);
+  app.post("/api/auth/logout", logout);
+  app.get("/api/auth/dashboard", dashboard);
 
   return app;
 }
