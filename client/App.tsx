@@ -13,6 +13,7 @@ import MarketDetail from "./pages/MarketDetail";
 import Careers from "./pages/Careers";
 import Access from "./pages/Access";
 import Dashboard from "./pages/Dashboard";
+import Registration from "./pages/Registration";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/markets/:market" element={<MarketDetail />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/sign-in" element={<Access />} />
+            <Route path="/register" element={<Registration />} />
             <Route path="/online-access" element={<Access setup />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route
