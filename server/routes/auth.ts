@@ -40,6 +40,14 @@ function clearSessionCookie(response: Parameters<RequestHandler>[1]) {
   response.setHeader("Set-Cookie", `${sessionCookie}=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0`);
 }
 
+export async function getSessionUser(request: Parameters<RequestHandler>[0]) {
+  const token = readCookie(request);
+  if (!token || !process.env.DATABASE_URL) return null;
+  await ensureSchema();
+  const result = await pool.query("SELECT u.id, u.email, u.company_name, u.role FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = $1 AND s.expires_at > NOW()", [hashToken(token)]);
+  return result.rows[0] as { id: string; email: string; company_name: string | null; role: "client" | "admin" } | undefined ?? null;
+}
+
 export const register: RequestHandler = async (request, response) => {
   const parsed = credentialsSchema.safeParse(request.body);
   if (!parsed.success) return response.status(400).json({ message: "Enter a valid email and a password of at least 12 characters." });

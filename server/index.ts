@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import { handleDemo } from "./routes/demo";
 import { dashboard, login, logout, register } from "./routes/auth";
+import { listApplications, reviewApplication, submitApplication } from "./routes/onboarding";
 
 export function createServer() {
   const app = express();
@@ -21,6 +22,9 @@ export function createServer() {
   app.post("/api/auth/login", login);
   app.post("/api/auth/logout", logout);
   app.get("/api/auth/dashboard", dashboard);
+  app.post("/api/onboarding/applications", submitApplication);
+  app.get("/api/admin/applications", listApplications);
+  app.patch("/api/admin/applications/:id", reviewApplication);
 
   return app;
 }
