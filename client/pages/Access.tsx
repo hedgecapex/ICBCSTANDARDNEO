@@ -21,9 +21,9 @@ export default function Access({ setup = false }: AccessProps) {
     const payload = { email: String(form.get("email") ?? ""), password: String(form.get("password") ?? ""), companyName: String(form.get("company") ?? "") || undefined };
     try {
       const response = await fetch(`/api/auth/${mode === "login" ? "login" : "register"}`, { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(payload) });
-      const result = await response.json() as { message?: string };
+      const result = await response.json() as { message?: string; user?: { role?: "client" | "admin" } };
       if (!response.ok) throw new Error(result.message ?? "Something went wrong.");
-      if (mode === "login") navigate("/dashboard");
+      if (mode === "login") navigate(result.user?.role === "admin" ? "/admin/applications" : "/dashboard");
       else setSubmitted(true);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "Unable to complete the request.");

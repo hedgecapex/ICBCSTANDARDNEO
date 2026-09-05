@@ -66,6 +66,15 @@ export function ensureSchema() {
         storage_key TEXT,
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
+      CREATE TABLE IF NOT EXISTS notifications (
+        id TEXT PRIMARY KEY,
+        application_id TEXT REFERENCES onboarding_applications(id) ON DELETE CASCADE,
+        recipient_email TEXT NOT NULL,
+        subject TEXT NOT NULL,
+        message TEXT NOT NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        sent_at TIMESTAMPTZ
+      );
     `).then(() => undefined);
   }
   return schemaPromise;

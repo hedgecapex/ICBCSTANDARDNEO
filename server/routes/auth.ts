@@ -44,7 +44,7 @@ export async function getSessionUser(request: Parameters<RequestHandler>[0]) {
   const token = readCookie(request);
   if (!token || !process.env.DATABASE_URL) return null;
   await ensureSchema();
-  const result = await pool.query("SELECT u.id, u.email, u.company_name, u.role FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = $1 AND s.expires_at > NOW()", [hashToken(token)]);
+  const result = await pool.query("SELECT u.id, u.email, u.company_name, CASE WHEN lower(u.email) = lower($2) THEN 'admin' ELSE u.role END AS role FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = $1 AND s.expires_at > NOW()", [hashToken(token), process.env.INITIAL_ADMIN_EMAIL ?? ""]);
   return result.rows[0] as { id: string; email: string; company_name: string | null; role: "client" | "admin" } | undefined ?? null;
 }
 
@@ -57,13 +57,14 @@ export const register: RequestHandler = async (request, response) => {
     await ensureSchema();
     const { email, password, companyName } = parsed.data;
     const passwordHash = await bcrypt.hash(password, 12);
+    const role = process.env.INITIAL_ADMIN_EMAIL?.trim().toLowerCase() === email ? "admin" : "client";
     const userId = randomUUID();
     const accountId = randomUUID();
     const accountNumber = `ICBC-${randomBytes(4).toString("hex").toUpperCase()}`;
     const client = await pool.connect();
     try {
       await client.query("BEGIN");
-      await client.query("INSERT INTO users (id, email, password_hash, company_name) VALUES ($1, $2, $3, $4)", [userId, email, passwordHash, companyName ?? null]);
+      await client.query("INSERT INTO users (id, email, password_hash, company_name, role) VALUES ($1, $2, $3, $4, $5)", [userId, email, passwordHash, companyName ?? null, role]);
       await client.query("INSERT INTO accounts (id, user_id, account_number, currency, available_balance, account_type) VALUES ($1, $2, $3, 'USD', 0, 'Operating account')", [accountId, userId, accountNumber]);
       await client.query("COMMIT");
     } catch (error) {
@@ -76,7 +77,7 @@ export const register: RequestHandler = async (request, response) => {
     const token = randomBytes(32).toString("base64url");
     await pool.query("INSERT INTO sessions (token_hash, user_id, expires_at) VALUES ($1, $2, NOW() + INTERVAL '8 hours')", [hashToken(token), userId]);
     setSessionCookie(response, token);
-    const body: AuthResponse = { user: { id: userId, email, companyName: companyName ?? null } };
+    const body: AuthResponse = { user: { id: userId, email, companyName: companyName ?? null, role } };
     return response.status(201).json(body);
   } catch (error) {
     console.error("Registration failed", error);
@@ -92,14 +93,14 @@ export const login: RequestHandler = async (request, response) => {
   try {
     await ensureSchema();
     const { email, password } = parsed.data;
-    const result = await pool.query("SELECT id, email, password_hash, company_name FROM users WHERE email = $1", [email]);
-    const user = result.rows[0] as { id: string; email: string; password_hash: string; company_name: string | null } | undefined;
+    const result = await pool.query("SELECT id, email, password_hash, company_name, role FROM users WHERE email = $1", [email]);
+    const user = result.rows[0] as { id: string; email: string; password_hash: string; company_name: string | null; role: "client" | "admin" } | undefined;
     const valid = user ? await bcrypt.compare(password, user.password_hash) : false;
     if (!valid) return response.status(401).json({ message: "Email or password is incorrect." });
     const token = randomBytes(32).toString("base64url");
     await pool.query("INSERT INTO sessions (token_hash, user_id, expires_at) VALUES ($1, $2, NOW() + INTERVAL '8 hours')", [hashToken(token), user.id]);
     setSessionCookie(response, token);
-    const body: AuthResponse = { user: { id: user.id, email: user.email, companyName: user.company_name } };
+    const body: AuthResponse = { user: { id: user.id, email: user.email, companyName: user.company_name, role: user.role } };
     return response.json(body);
   } catch (error) {
     console.error("Login failed", error);

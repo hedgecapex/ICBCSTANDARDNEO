@@ -35,6 +35,7 @@ export const submitApplication: RequestHandler = async (request, response) => {
       const { documents, ...application } = parsed.data;
       await client.query(`INSERT INTO onboarding_applications (id, email, first_name, last_name, phone, account_type, country, address, source_of_funds, intended_use) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`, [applicationId, application.email, application.firstName, application.lastName, application.phone, application.accountType, application.country, application.address, application.sourceOfFunds, application.intendedUse]);
       for (const document of documents) await client.query("INSERT INTO onboarding_documents (id, application_id, document_type, file_name) VALUES ($1, $2, $3, $4)", [randomUUID(), applicationId, document.type, document.fileName]);
+      await client.query("INSERT INTO notifications (id, application_id, recipient_email, subject, message) VALUES ($1, $2, $3, $4, $5)", [randomUUID(), applicationId, application.email, "Application received", "Your onboarding application has been received and is pending review."]);
       await client.query("COMMIT");
     } catch (error) {
       await client.query("ROLLBACK");
@@ -69,6 +70,10 @@ export const reviewApplication: RequestHandler = async (request, response) => {
   try {
     const result = await pool.query("UPDATE onboarding_applications SET status = $1, review_note = $2, reviewed_by = $3, reviewed_at = NOW(), updated_at = NOW() WHERE id = $4 RETURNING id, status, review_note", [parsed.data.status, parsed.data.note ?? null, user.id, request.params.id]);
     if (!result.rows[0]) return response.status(404).json({ message: "Application not found." });
+    const subject = parsed.data.status === "approved" ? "Application approved" : parsed.data.status === "denied" ? "Application decision" : parsed.data.status === "more_information" ? "More information requested" : "Application status updated";
+    const message = parsed.data.note ?? `Your onboarding application status is now ${parsed.data.status}.`;
+    const applicant = await pool.query("SELECT email FROM onboarding_applications WHERE id = $1", [request.params.id]);
+    if (applicant.rows[0]) await pool.query("INSERT INTO notifications (id, application_id, recipient_email, subject, message) VALUES ($1, $2, $3, $4, $5)", [randomUUID(), request.params.id, applicant.rows[0].email, subject, message]);
     return response.json({ application: result.rows[0] });
   } catch (error) {
     console.error("Application review failed", error);

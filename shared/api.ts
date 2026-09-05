@@ -9,6 +9,7 @@ export interface AuthUser {
   id: string;
   email: string;
   companyName: string | null;
+  role?: "client" | "admin";
 }
 
 export interface AuthResponse {
