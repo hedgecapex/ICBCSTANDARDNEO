@@ -15,6 +15,7 @@ import Access from "./pages/Access";
 import Dashboard from "./pages/Dashboard";
 import Registration from "./pages/Registration";
 import AdminApplications from "./pages/AdminApplications";
+import ApplicationStatus from "./pages/ApplicationStatus";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/online-access" element={<Access setup />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admin/applications" element={<AdminApplications />} />
+            <Route path="/application-status" element={<ApplicationStatus />} />
             <Route
               path="/legal/terms"
               element={<Placeholder title="Terms & Conditions" />}
