@@ -75,6 +75,20 @@ export function ensureSchema() {
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
         sent_at TIMESTAMPTZ
       );
+      CREATE TABLE IF NOT EXISTS opening_deposits (
+        id TEXT PRIMARY KEY,
+        application_id TEXT REFERENCES onboarding_applications(id) ON DELETE SET NULL,
+        applicant_email TEXT NOT NULL,
+        amount NUMERIC(18, 2) NOT NULL,
+        currency CHAR(3) NOT NULL,
+        proof_file_name TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'verified', 'rejected')),
+        review_note TEXT,
+        reviewed_by TEXT,
+        reviewed_at TIMESTAMPTZ,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+      CREATE INDEX IF NOT EXISTS opening_deposits_status_idx ON opening_deposits(status);
     `).then(() => undefined);
   }
   return schemaPromise;

@@ -3,6 +3,7 @@ import express from "express";
 import { handleDemo } from "./routes/demo";
 import { dashboard, login, logout, register } from "./routes/auth";
 import { listApplications, reviewApplication, submitApplication } from "./routes/onboarding";
+import { listDeposits, reviewDeposit, submitDeposit } from "./routes/deposits";
 
 export function createServer() {
   const app = express();
@@ -25,6 +26,9 @@ export function createServer() {
   app.post("/api/onboarding/applications", submitApplication);
   app.get("/api/admin/applications", listApplications);
   app.patch("/api/admin/applications/:id", reviewApplication);
+  app.post("/api/onboarding/deposits", submitDeposit);
+  app.get("/api/admin/deposits", listDeposits);
+  app.patch("/api/admin/deposits/:id", reviewDeposit);
 
   return app;
 }
