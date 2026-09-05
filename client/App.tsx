@@ -16,6 +16,7 @@ import Dashboard from "./pages/Dashboard";
 import Registration from "./pages/Registration";
 import AdminApplications from "./pages/AdminApplications";
 import ApplicationStatus from "./pages/ApplicationStatus";
+import OpeningDeposit from "./pages/OpeningDeposit";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admin/applications" element={<AdminApplications />} />
             <Route path="/application-status" element={<ApplicationStatus />} />
+            <Route path="/opening-deposit" element={<OpeningDeposit />} />
             <Route
               path="/legal/terms"
               element={<Placeholder title="Terms & Conditions" />}
