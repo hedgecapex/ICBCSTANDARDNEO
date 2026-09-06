@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import { handleDemo } from "./routes/demo";
 import { dashboard, login, logout, register } from "./routes/auth";
-import { listApplications, reviewApplication, submitApplication } from "./routes/onboarding";
+import { getClientApplicationStatus, listApplications, reviewApplication, submitApplication } from "./routes/onboarding";
 import { listDeposits, reviewDeposit, submitDeposit } from "./routes/deposits";
 import { getClientFinancingProfile, listLoanApplications, reviewLoanApplication, submitLoanApplication } from "./routes/loans";
 import { listDeliveries, listTemplates, updateTemplate } from "./routes/notifications";
@@ -27,6 +27,7 @@ export function createServer() {
   app.post("/api/auth/logout", logout);
   app.get("/api/auth/dashboard", dashboard);
   app.post("/api/onboarding/applications", submitApplication);
+  app.get("/api/onboarding/status", getClientApplicationStatus);
   app.get("/api/admin/applications", listApplications);
   app.patch("/api/admin/applications/:id", reviewApplication);
   app.post("/api/onboarding/deposits", submitDeposit);

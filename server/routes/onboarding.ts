@@ -51,6 +51,21 @@ export const submitApplication: RequestHandler = async (request, response) => {
   }
 };
 
+export const getClientApplicationStatus: RequestHandler = async (request, response) => {
+  const user = await getSessionUser(request);
+  if (!user) return response.status(401).json({ message: "Authentication required." });
+  try {
+    await ensureSchema();
+    const application = await pool.query("SELECT id, first_name, last_name, email, status, review_note, created_at, updated_at FROM onboarding_applications WHERE lower(email) = lower($1) ORDER BY created_at DESC LIMIT 1", [user.email]);
+    if (!application.rows[0]) return response.json({ application: null, deposit: null });
+    const deposit = await pool.query("SELECT status, amount, currency, created_at FROM opening_deposits WHERE lower(applicant_email) = lower($1) ORDER BY created_at DESC LIMIT 1", [user.email]);
+    return response.json({ application: application.rows[0], deposit: deposit.rows[0] ?? null });
+  } catch (error) {
+    console.error("Client application status failed", error);
+    return response.status(500).json({ message: "Unable to load application status." });
+  }
+};
+
 export const listApplications: RequestHandler = async (request, response) => {
   const user = await getSessionUser(request);
   if (!user || user.role !== "admin") return response.status(403).json({ message: "Administrator access required." });
