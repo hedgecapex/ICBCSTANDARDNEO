@@ -120,6 +120,25 @@ export function ensureSchema() {
         updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
       CREATE INDEX IF NOT EXISTS loan_applications_status_idx ON loan_applications(status);
+      CREATE TABLE IF NOT EXISTS notification_templates (
+        id TEXT PRIMARY KEY,
+        event_key TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        subject TEXT NOT NULL,
+        body TEXT NOT NULL,
+        enabled BOOLEAN NOT NULL DEFAULT TRUE,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+      CREATE TABLE IF NOT EXISTS notification_deliveries (
+        id TEXT PRIMARY KEY,
+        template_id TEXT REFERENCES notification_templates(id) ON DELETE SET NULL,
+        recipient_email TEXT NOT NULL,
+        subject TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'queued' CHECK (status IN ('queued', 'sent', 'failed')),
+        error_message TEXT,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        sent_at TIMESTAMPTZ
+      );
       CREATE TABLE IF NOT EXISTS loan_application_documents (
         id TEXT PRIMARY KEY,
         loan_application_id TEXT NOT NULL REFERENCES loan_applications(id) ON DELETE CASCADE,
@@ -142,7 +161,23 @@ export function ensureSchema() {
         status TEXT NOT NULL DEFAULT 'prepared' CHECK (status IN ('prepared', 'active', 'closed')),
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
-    `).then(() => undefined);
+    `).then(async () => {
+      const templates = [
+        ["application_received", "Application received", "Your application has been received", "Your application has been received and is pending review."],
+        ["more_information", "More information required", "Additional information is required", "Our team needs additional information to continue reviewing your application."],
+        ["application_approved", "Application approved", "Your application has been approved", "Your application has been approved. Please review the next steps in your secure portal."],
+        ["application_denied", "Application decision", "An update about your application", "Your application status has been updated. Please sign in to review the details."],
+        ["appraisal_required", "Appraisal required", "Collateral appraisal required", "A collateral appraisal is required before we can complete the financing review."],
+        ["credit_review", "Credit review started", "Your financing request is under credit review", "Our credit team is evaluating your request, repayment source, and supporting information."],
+        ["financing_approved", "Financing approved", "Your financing request has been approved", "Your approved financing profile is ready to review in the client portal."],
+        ["deposit_instructions", "Opening deposit instructions", "Your opening deposit instructions are ready", "Please review the secure opening deposit instructions in your client portal."],
+        ["deposit_received", "Deposit proof received", "Your deposit proof is being verified", "We received your payment confirmation and our operations team is verifying it."],
+        ["account_activated", "Account activated", "Your account is now active", "Your account has been activated. Sign in to access your client portal."],
+      ];
+      for (const [eventKey, name, subject, body] of templates) {
+        await pool.query("INSERT INTO notification_templates (id, event_key, name, subject, body) VALUES ($1,$2,$3,$4,$5) ON CONFLICT (event_key) DO NOTHING", [eventKey, eventKey, name, subject, body]);
+      }
+    });
   }
   return schemaPromise;
 }
