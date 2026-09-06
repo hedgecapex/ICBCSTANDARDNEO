@@ -16,6 +16,7 @@ import Dashboard from "./pages/Dashboard";
 import Registration from "./pages/Registration";
 import AdminApplications from "./pages/AdminApplications";
 import FinancingApplication from "./pages/FinancingApplication";
+import AdminFinancing from "./pages/AdminFinancing";
 import ApplicationStatus from "./pages/ApplicationStatus";
 import OpeningDeposit from "./pages/OpeningDeposit";
 import AdminDeposits from "./pages/AdminDeposits";
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/markets/:market" element={<MarketDetail />} />
             <Route path="/financing/apply" element={<FinancingApplication />} />
+            <Route path="/admin/financing" element={<AdminFinancing />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/sign-in" element={<Access />} />
             <Route path="/register" element={<Registration />} />
