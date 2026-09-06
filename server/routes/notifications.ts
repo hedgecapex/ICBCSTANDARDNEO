@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { z } from "zod";
 import { ensureSchema, pool } from "../db";
 import { getSessionUser } from "./auth";
+import { recordAudit } from "../audit";
 
 const templateSchema = z.object({ name: z.string().trim().min(2).max(120), subject: z.string().trim().min(2).max(200), body: z.string().trim().min(10).max(5000), enabled: z.boolean() });
 
@@ -16,7 +17,7 @@ export const updateTemplate: RequestHandler = async (request, response) => {
   if (!user || user.role !== "admin") return response.status(403).json({ message: "Administrator access required." });
   const parsed = templateSchema.safeParse(request.body);
   if (!parsed.success) return response.status(400).json({ message: "Provide a valid notification template." });
-  try { const result = await pool.query("UPDATE notification_templates SET name=$1, subject=$2, body=$3, enabled=$4, updated_at=NOW() WHERE id=$5 RETURNING id, event_key, name, subject, body, enabled, updated_at", [parsed.data.name, parsed.data.subject, parsed.data.body, parsed.data.enabled, request.params.id]); if (!result.rows[0]) return response.status(404).json({ message: "Notification template not found." }); return response.json({ template: result.rows[0] }); } catch (error) { console.error("Notification template update failed", error); return response.status(500).json({ message: "Unable to update notification template." }); }
+  try { const result = await pool.query("UPDATE notification_templates SET name=$1, subject=$2, body=$3, enabled=$4, updated_at=NOW() WHERE id=$5 RETURNING id, event_key, name, subject, body, enabled, updated_at", [parsed.data.name, parsed.data.subject, parsed.data.body, parsed.data.enabled, request.params.id]); if (!result.rows[0]) return response.status(404).json({ message: "Notification template not found." }); await recordAudit({ actorUserId: user.id, actorEmail: user.email, action: "notification_template.updated", entityType: "notification_template", entityId: String(request.params.id), details: { enabled: parsed.data.enabled } }); return response.json({ template: result.rows[0] }); } catch (error) { console.error("Notification template update failed", error); return response.status(500).json({ message: "Unable to update notification template." }); }
 };
 
 export const listDeliveries: RequestHandler = async (request, response) => {

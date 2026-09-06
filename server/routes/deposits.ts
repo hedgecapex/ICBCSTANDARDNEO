@@ -3,6 +3,7 @@ import { RequestHandler } from "express";
 import { z } from "zod";
 import { ensureSchema, pool } from "../db";
 import { getSessionUser } from "./auth";
+import { recordAudit } from "../audit";
 
 const depositSchema = z.object({
   applicationId: z.string().trim().min(1).max(100),
@@ -51,6 +52,7 @@ export const reviewDeposit: RequestHandler = async (request, response) => {
   try {
     const result = await pool.query("UPDATE opening_deposits SET status = $1, review_note = $2, reviewed_by = $3, reviewed_at = NOW() WHERE id = $4 RETURNING id, status, review_note", [parsed.data.status, parsed.data.note ?? null, user.id, request.params.id]);
     if (!result.rows[0]) return response.status(404).json({ message: "Deposit not found." });
+    await recordAudit({ actorUserId: user.id, actorEmail: user.email, action: `deposit.${parsed.data.status}`, entityType: "opening_deposit", entityId: String(request.params.id), details: { note: parsed.data.note ?? null } });
     return response.json({ deposit: result.rows[0] });
   } catch (error) {
     console.error("Deposit review failed", error);

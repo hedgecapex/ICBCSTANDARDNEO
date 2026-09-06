@@ -139,6 +139,17 @@ export function ensureSchema() {
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
         sent_at TIMESTAMPTZ
       );
+      CREATE TABLE IF NOT EXISTS audit_logs (
+        id TEXT PRIMARY KEY,
+        actor_user_id TEXT,
+        actor_email TEXT,
+        action TEXT NOT NULL,
+        entity_type TEXT NOT NULL,
+        entity_id TEXT,
+        details JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+      CREATE INDEX IF NOT EXISTS audit_logs_created_at_idx ON audit_logs(created_at DESC);
       CREATE TABLE IF NOT EXISTS loan_application_documents (
         id TEXT PRIMARY KEY,
         loan_application_id TEXT NOT NULL REFERENCES loan_applications(id) ON DELETE CASCADE,

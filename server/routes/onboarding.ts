@@ -3,6 +3,7 @@ import { RequestHandler } from "express";
 import { z } from "zod";
 import { ensureSchema, pool } from "../db";
 import { getSessionUser } from "./auth";
+import { recordAudit } from "../audit";
 
 const applicationSchema = z.object({
   email: z.string().trim().toLowerCase().email(),
@@ -74,6 +75,7 @@ export const reviewApplication: RequestHandler = async (request, response) => {
     const message = parsed.data.note ?? `Your onboarding application status is now ${parsed.data.status}.`;
     const applicant = await pool.query("SELECT email FROM onboarding_applications WHERE id = $1", [request.params.id]);
     if (applicant.rows[0]) await pool.query("INSERT INTO notifications (id, application_id, recipient_email, subject, message) VALUES ($1, $2, $3, $4, $5)", [randomUUID(), request.params.id, applicant.rows[0].email, subject, message]);
+    await recordAudit({ actorUserId: user.id, actorEmail: user.email, action: `onboarding.${parsed.data.status}`, entityType: "onboarding_application", entityId: String(request.params.id), details: { note: parsed.data.note ?? null } });
     return response.json({ application: result.rows[0] });
   } catch (error) {
     console.error("Application review failed", error);

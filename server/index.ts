@@ -6,6 +6,7 @@ import { listApplications, reviewApplication, submitApplication } from "./routes
 import { listDeposits, reviewDeposit, submitDeposit } from "./routes/deposits";
 import { listLoanApplications, reviewLoanApplication, submitLoanApplication } from "./routes/loans";
 import { listDeliveries, listTemplates, updateTemplate } from "./routes/notifications";
+import { listAuditLogs } from "./routes/audit";
 
 export function createServer() {
   const app = express();
@@ -37,6 +38,7 @@ export function createServer() {
   app.get("/api/admin/notifications/templates", listTemplates);
   app.patch("/api/admin/notifications/templates/:id", updateTemplate);
   app.get("/api/admin/notifications/deliveries", listDeliveries);
+  app.get("/api/admin/audit", listAuditLogs);
 
   return app;
 }

@@ -3,6 +3,7 @@ import { RequestHandler } from "express";
 import { z } from "zod";
 import { ensureSchema, pool } from "../db";
 import { getSessionUser } from "./auth";
+import { recordAudit } from "../audit";
 
 const loanSchema = z.object({
   applicantEmail: z.string().trim().toLowerCase().email(),
@@ -90,6 +91,7 @@ export const reviewLoanApplication: RequestHandler = async (request, response) =
     }
     const applicant = await pool.query("SELECT applicant_email FROM loan_applications WHERE id=$1", [request.params.id]);
     if (applicant.rows[0]) await pool.query("INSERT INTO notifications (id, recipient_email, subject, message) VALUES ($1,$2,$3,$4)", [randomUUID(), applicant.rows[0].applicant_email, "Financing application updated", parsed.data.note ?? `Your financing request status is now ${parsed.data.status}.`]);
+    await recordAudit({ actorUserId: user.id, actorEmail: user.email, action: `financing.${parsed.data.status}`, entityType: "loan_application", entityId: String(request.params.id), details: { approvedAmount: parsed.data.approvedAmount ?? null, note: parsed.data.note ?? null } });
     return response.json({ application: result.rows[0] });
   } catch (error) {
     console.error("Loan application review failed", error);
