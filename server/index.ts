@@ -5,7 +5,7 @@ import { dashboard, login, logout, register } from "./routes/auth";
 import { getClientApplicationStatus, listApplications, reviewApplication, submitApplication } from "./routes/onboarding";
 import { listDeposits, reviewDeposit, submitDeposit } from "./routes/deposits";
 import { getClientFinancingProfile, listLoanApplications, reviewLoanApplication, submitLoanApplication } from "./routes/loans";
-import { listDeliveries, listTemplates, updateTemplate } from "./routes/notifications";
+import { listClientMessages, listDeliveries, listTemplates, updateTemplate } from "./routes/notifications";
 import { listAuditLogs } from "./routes/audit";
 
 export function createServer() {
@@ -37,6 +37,7 @@ export function createServer() {
   app.get("/api/financing/profile", getClientFinancingProfile);
   app.get("/api/admin/financing/applications", listLoanApplications);
   app.patch("/api/admin/financing/applications/:id", reviewLoanApplication);
+  app.get("/api/messages", listClientMessages);
   app.get("/api/admin/notifications/templates", listTemplates);
   app.patch("/api/admin/notifications/templates/:id", updateTemplate);
   app.get("/api/admin/notifications/deliveries", listDeliveries);

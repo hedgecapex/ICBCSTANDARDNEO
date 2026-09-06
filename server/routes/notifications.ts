@@ -6,6 +6,19 @@ import { recordAudit } from "../audit";
 
 const templateSchema = z.object({ name: z.string().trim().min(2).max(120), subject: z.string().trim().min(2).max(200), body: z.string().trim().min(10).max(5000), enabled: z.boolean() });
 
+export const listClientMessages: RequestHandler = async (request, response) => {
+  const user = await getSessionUser(request);
+  if (!user) return response.status(401).json({ message: "Authentication required." });
+  try {
+    await ensureSchema();
+    const result = await pool.query("SELECT id, subject, message, created_at, sent_at FROM notifications WHERE lower(recipient_email) = lower($1) ORDER BY created_at DESC LIMIT 100", [user.email]);
+    return response.json({ messages: result.rows });
+  } catch (error) {
+    console.error("Client message listing failed", error);
+    return response.status(500).json({ message: "Unable to load your messages." });
+  }
+};
+
 export const listTemplates: RequestHandler = async (request, response) => {
   const user = await getSessionUser(request);
   if (!user || user.role !== "admin") return response.status(403).json({ message: "Administrator access required." });
