@@ -63,6 +63,19 @@ export const submitLoanApplication: RequestHandler = async (request, response) =
   }
 };
 
+export const getClientFinancingProfile: RequestHandler = async (request, response) => {
+  const user = await getSessionUser(request);
+  if (!user) return response.status(401).json({ message: "Authentication required." });
+  try {
+    await ensureSchema();
+    const result = await pool.query(`SELECT la.account_number, la.approved_amount, la.currency, la.approved_term, la.collateral_value, la.collateral_currency, la.down_payment, la.closing_cost, la.status, a.project_name, a.market FROM loan_accounts la JOIN loan_applications a ON a.id = la.loan_application_id WHERE lower(a.applicant_email) = lower($1) ORDER BY la.created_at DESC`, [user.email]);
+    return response.json({ profile: result.rows[0] ?? null });
+  } catch (error) {
+    console.error("Client financing profile failed", error);
+    return response.status(500).json({ message: "Unable to load the financing profile." });
+  }
+};
+
 export const listLoanApplications: RequestHandler = async (request, response) => {
   const user = await getSessionUser(request);
   if (!user || user.role !== "admin") return response.status(403).json({ message: "Administrator access required." });
