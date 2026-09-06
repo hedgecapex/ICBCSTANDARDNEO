@@ -15,6 +15,7 @@ import Access from "./pages/Access";
 import Dashboard from "./pages/Dashboard";
 import Registration from "./pages/Registration";
 import AdminApplications from "./pages/AdminApplications";
+import FinancingApplication from "./pages/FinancingApplication";
 import ApplicationStatus from "./pages/ApplicationStatus";
 import OpeningDeposit from "./pages/OpeningDeposit";
 import AdminDeposits from "./pages/AdminDeposits";
@@ -33,6 +34,7 @@ const App = () => (
           <Route element={<Layout />}>
             <Route path="/" element={<Index />} />
             <Route path="/markets/:market" element={<MarketDetail />} />
+            <Route path="/financing/apply" element={<FinancingApplication />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/sign-in" element={<Access />} />
             <Route path="/register" element={<Registration />} />

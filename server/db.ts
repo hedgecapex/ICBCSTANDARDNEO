@@ -89,6 +89,42 @@ export function ensureSchema() {
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
       CREATE INDEX IF NOT EXISTS opening_deposits_status_idx ON opening_deposits(status);
+      CREATE TABLE IF NOT EXISTS loan_applications (
+        id TEXT PRIMARY KEY,
+        applicant_email TEXT NOT NULL,
+        market TEXT NOT NULL,
+        project_name TEXT NOT NULL,
+        requested_amount NUMERIC(18, 2) NOT NULL,
+        currency CHAR(3) NOT NULL,
+        requested_term TEXT NOT NULL,
+        down_payment_percent NUMERIC(6, 2) NOT NULL,
+        purpose TEXT NOT NULL,
+        collateral_type TEXT NOT NULL,
+        collateral_value NUMERIC(18, 2) NOT NULL,
+        collateral_currency CHAR(3) NOT NULL,
+        closing_cost_percent NUMERIC(6, 2) NOT NULL,
+        collateral_notes TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'pending_review' CHECK (status IN ('pending_review', 'more_information', 'appraisal', 'credit_review', 'approved', 'denied')),
+        approved_amount NUMERIC(18, 2),
+        approved_currency CHAR(3),
+        approved_term TEXT,
+        approved_down_payment NUMERIC(18, 2),
+        approved_closing_cost NUMERIC(18, 2),
+        review_note TEXT,
+        reviewed_by TEXT,
+        reviewed_at TIMESTAMPTZ,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+      CREATE INDEX IF NOT EXISTS loan_applications_status_idx ON loan_applications(status);
+      CREATE TABLE IF NOT EXISTS loan_application_documents (
+        id TEXT PRIMARY KEY,
+        loan_application_id TEXT NOT NULL REFERENCES loan_applications(id) ON DELETE CASCADE,
+        document_type TEXT NOT NULL,
+        file_name TEXT NOT NULL,
+        storage_key TEXT,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
     `).then(() => undefined);
   }
   return schemaPromise;

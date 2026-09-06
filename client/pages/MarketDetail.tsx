@@ -61,9 +61,9 @@ export default function MarketDetail() {
         <div>
           <span className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-gold">Our approach</span>
           <p className="mt-5 max-w-2xl text-2xl font-medium leading-relaxed text-foreground">{detail.body}</p>
-          <Button asChild size="lg" className="mt-9 bg-brand-navy hover:bg-brand-navy/90">
-            <Link to="/online-access">Connect with our team <ArrowUpRight className="h-4 w-4" /></Link>
-          </Button>
+          <div className="mt-9 flex flex-wrap gap-3"><Button asChild size="lg" className="bg-brand-navy hover:bg-brand-navy/90">
+            <Link to={`/financing/apply?market=${market ?? "commodities"}`}>Apply for structured finance <ArrowUpRight className="h-4 w-4" /></Link>
+          </Button><Button asChild size="lg" variant="outline" className="border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white"><Link to="/online-access">Connect with our team</Link></Button></div>
         </div>
         <div className="rounded-xl border border-border bg-secondary/60 p-8">
           <div className="flex h-11 w-11 items-center justify-center rounded-md bg-brand-navy text-brand-gold"><Sparkles className="h-5 w-5" /></div>
