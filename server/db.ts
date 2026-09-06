@@ -128,6 +128,20 @@ export function ensureSchema() {
         storage_key TEXT,
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
+      CREATE TABLE IF NOT EXISTS loan_accounts (
+        id TEXT PRIMARY KEY,
+        loan_application_id TEXT NOT NULL UNIQUE REFERENCES loan_applications(id) ON DELETE CASCADE,
+        account_number TEXT NOT NULL UNIQUE,
+        approved_amount NUMERIC(18, 2) NOT NULL,
+        currency CHAR(3) NOT NULL,
+        approved_term TEXT NOT NULL,
+        collateral_value NUMERIC(18, 2) NOT NULL,
+        collateral_currency CHAR(3) NOT NULL,
+        down_payment NUMERIC(18, 2) NOT NULL DEFAULT 0,
+        closing_cost NUMERIC(18, 2) NOT NULL DEFAULT 0,
+        status TEXT NOT NULL DEFAULT 'prepared' CHECK (status IN ('prepared', 'active', 'closed')),
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
     `).then(() => undefined);
   }
   return schemaPromise;
