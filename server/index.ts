@@ -7,6 +7,7 @@ import { listDeposits, reviewDeposit, submitDeposit } from "./routes/deposits";
 import { getClientFinancingProfile, listLoanApplications, reviewLoanApplication, submitLoanApplication } from "./routes/loans";
 import { listClientMessages, listDeliveries, listTemplates, updateTemplate } from "./routes/notifications";
 import { listAuditLogs } from "./routes/audit";
+import { pool } from "./db";
 
 export function createServer() {
   const app = express();
@@ -16,8 +17,13 @@ export function createServer() {
   app.use(express.urlencoded({ extended: true }));
 
   // Example API routes
-  app.get("/health", (_req, res) => {
-    res.json({ status: "ok" });
+  app.get("/health", async (_req, res) => {
+    try {
+      await pool.query("SELECT 1");
+      return res.json({ status: "ok", database: "ok" });
+    } catch {
+      return res.status(503).json({ status: "degraded", database: "unavailable" });
+    }
   });
 
   app.get("/api/ping", (_req, res) => {
