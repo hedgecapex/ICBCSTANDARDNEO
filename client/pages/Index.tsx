@@ -75,6 +75,15 @@ export default function Index() {
                 <Link to="/sign-in">Sign In</Link>
               </Button>
             </div>
+            <div className="mt-8 max-w-xl rounded-lg border border-white/15 bg-white/5 p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">Builder preview</p>
+              <p className="mt-2 text-sm leading-relaxed text-white/65">Explore the client and administration workflows with sample data while the production API is being deployed separately.</p>
+              <div className="mt-4 flex flex-wrap gap-3 text-xs font-semibold">
+                <Link to="/dashboard?demo=1" className="border border-white/20 px-3 py-2 text-white hover:border-brand-gold hover:text-brand-gold">Client portal</Link>
+                <Link to="/application-status?demo=1" className="border border-white/20 px-3 py-2 text-white hover:border-brand-gold hover:text-brand-gold">Application status</Link>
+                <Link to="/admin/applications?demo=1" className="border border-white/20 px-3 py-2 text-white hover:border-brand-gold hover:text-brand-gold">Admin workspace</Link>
+              </div>
+            </div>
           </div>
         </div>
 
