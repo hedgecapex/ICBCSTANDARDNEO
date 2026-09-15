@@ -4,6 +4,7 @@ import { Menu, X, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { primaryNav } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
+import BrandMark from "./BrandMark";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -17,9 +18,7 @@ export default function Header() {
           className="group flex items-center gap-3"
           onClick={() => setOpen(false)}
         >
-          <span className="flex h-10 w-10 items-center justify-center rounded-sm border border-brand-gold/60 font-display text-xl font-semibold text-brand-gold">
-            IS
-          </span>
+          <BrandMark />
           <span className="flex flex-col leading-none">
             <span className="font-display text-xl font-semibold tracking-wide text-white">
               ICBC Standard

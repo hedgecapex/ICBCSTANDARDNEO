@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Phone, MapPin } from "lucide-react";
 import { legalLinks, marketLinks, offices } from "@/lib/site-data";
+import BrandMark from "./BrandMark";
 
 export default function Footer() {
   return (
@@ -8,9 +9,7 @@ export default function Footer() {
       <div className="container grid gap-12 py-16 lg:grid-cols-[1.2fr_1fr_1fr]">
         <div>
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-sm border border-brand-gold/60 font-display text-xl font-semibold text-brand-gold">
-              IS
-            </span>
+            <BrandMark />
             <span className="font-display text-lg font-semibold text-white">
               ICBC Standard Bank Plc
             </span>
