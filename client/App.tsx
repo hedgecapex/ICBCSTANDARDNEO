@@ -16,6 +16,7 @@ import Dashboard from "./pages/Dashboard";
 import Registration from "./pages/Registration";
 import AdminApplications from "./pages/AdminApplications";
 import FinancingApplication from "./pages/FinancingApplication";
+import FinancingTools from "./pages/FinancingTools";
 import AdminFinancing from "./pages/AdminFinancing";
 import ClientFinancing from "./pages/ClientFinancing";
 import AdminNotifications from "./pages/AdminNotifications";
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/markets/:market" element={<MarketDetail />} />
             <Route path="/financing/apply" element={<FinancingApplication />} />
+            <Route path="/financing/tools" element={<FinancingTools />} />
             <Route path="/admin/financing" element={<AdminFinancing />} />
             <Route path="/client/financing" element={<ClientFinancing />} />
             <Route path="/admin/notifications" element={<AdminNotifications />} />

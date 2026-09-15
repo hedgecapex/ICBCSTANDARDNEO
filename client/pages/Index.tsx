@@ -144,7 +144,7 @@ export default function Index() {
           </div>
           <div className="mt-10 flex flex-col gap-4 rounded-lg border border-brand-gold/30 bg-brand-gold/10 p-6 sm:flex-row sm:items-center sm:justify-between">
             <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-navy">Structured finance</p><p className="mt-2 font-display text-2xl font-semibold text-brand-navy">Have a secured financing opportunity?</p><p className="mt-1 text-sm text-muted-foreground">Submit an initial request for our team to review.</p></div>
-            <Button asChild className="w-fit bg-brand-navy hover:bg-brand-navy/90"><Link to="/financing/apply">Start a financing request <ArrowUpRight className="h-4 w-4" /></Link></Button>
+            <div className="flex flex-wrap gap-3"><Button asChild className="w-fit bg-brand-navy hover:bg-brand-navy/90"><Link to="/financing/apply">Start a financing request <ArrowUpRight className="h-4 w-4" /></Link></Button><Button asChild variant="outline" className="w-fit border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white"><Link to="/financing/tools">Explore financing tools <ArrowUpRight className="h-4 w-4" /></Link></Button></div>
           </div>
         </div>
       </section>
