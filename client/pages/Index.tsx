@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { marketLinks, offices } from "@/lib/site-data";
+import InstitutionalHeroArt from "@/components/brand/InstitutionalHeroArt";
 
 const marketIcons = [Boxes, ArrowLeftRight, LineChart, Landmark];
 
@@ -37,8 +38,8 @@ export default function Index() {
           }}
         />
         <div className="pointer-events-none absolute -right-40 -top-40 h-[520px] w-[520px] rounded-full bg-brand-gold/10 blur-3xl" />
-        <div className="container relative py-24 lg:py-32">
-          <div className="max-w-3xl">
+        <div className="container relative grid gap-10 py-24 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-32">
+          <div className="relative z-10 max-w-3xl">
             <span className="inline-flex items-center gap-2 rounded-full border border-brand-gold/40 bg-brand-gold/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">
               ICBC Standard Bank Plc
             </span>
@@ -85,6 +86,7 @@ export default function Index() {
               </div>
             </div>
           </div>
+          <div className="pointer-events-none relative hidden min-h-[360px] lg:block"><InstitutionalHeroArt /></div>
         </div>
 
         {/* Stats strip */}
