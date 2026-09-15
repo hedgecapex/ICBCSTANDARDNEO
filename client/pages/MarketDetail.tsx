@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowUpRight, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { marketLinks } from "@/lib/site-data";
+import SectorArtwork from "@/components/brand/SectorArtwork";
 
 const details = {
   commodities: {
@@ -39,6 +40,7 @@ export default function MarketDetail() {
   const detail = details[market as keyof typeof details] ?? details.commodities;
   const currentIndex = marketLinks.findIndex((item) => item.path.endsWith(market ?? ""));
   const nextMarket = marketLinks[(currentIndex + 1) % marketLinks.length];
+  const sectorKind = market === "commodities" ? "energy" : market === "primary-markets" ? "government" : market === "fixed-income" ? "industrial" : "real-estate";
 
   return (
     <div>
@@ -49,10 +51,9 @@ export default function MarketDetail() {
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-white/60 transition-colors hover:text-brand-gold">
             <ArrowLeft className="h-4 w-4" /> Back to overview
           </Link>
-          <div className="mt-16 max-w-3xl">
-            <span className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-gold">{detail.eyebrow}</span>
-            <h1 className="mt-4 font-display text-6xl font-semibold text-white sm:text-7xl">{detail.title}</h1>
-            <p className="mt-6 max-w-2xl text-2xl leading-snug text-white/80">{detail.intro}</p>
+          <div className="mt-16 grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-center">
+            <div><span className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-gold">{detail.eyebrow}</span><h1 className="mt-4 font-display text-6xl font-semibold text-white sm:text-7xl">{detail.title}</h1><p className="mt-6 max-w-2xl text-2xl leading-snug text-white/80">{detail.intro}</p></div>
+            <div className="hidden min-h-[250px] lg:block"><SectorArtwork kind={sectorKind} /></div>
           </div>
         </div>
       </section>
