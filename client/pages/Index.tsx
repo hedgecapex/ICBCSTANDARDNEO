@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { marketLinks, offices } from "@/lib/site-data";
 import InstitutionalHeroArt from "@/components/brand/InstitutionalHeroArt";
+import SectorArtwork from "@/components/brand/SectorArtwork";
 
 const marketIcons = [Boxes, ArrowLeftRight, LineChart, Landmark];
 
@@ -22,6 +23,13 @@ const stats = [
   { label: "Core Markets", value: "4" },
   { label: "Years of Heritage", value: "30+" },
   { label: "Regulated Entity", value: "PRA / FCA" },
+];
+
+const sectors = [
+  { kind: "real-estate" as const, label: "Real estate development", text: "Residential, commercial and mixed-use opportunities with clear collateral and delivery milestones." },
+  { kind: "energy" as const, label: "Oil & Gas and energy", text: "Trading, field development and essential-energy infrastructure structured around contracts and controls." },
+  { kind: "industrial" as const, label: "Industrial development", text: "Manufacturing, logistics and productive infrastructure with measurable operating outcomes." },
+  { kind: "government" as const, label: "Government programs", text: "Public-purpose development and program-linked financing subject to mandate and approval." },
 ];
 
 export default function Index() {
@@ -149,6 +157,10 @@ export default function Index() {
             <div className="flex flex-wrap gap-3"><Button asChild className="w-fit bg-brand-navy hover:bg-brand-navy/90"><Link to="/financing/apply">Start a financing request <ArrowUpRight className="h-4 w-4" /></Link></Button><Button asChild variant="outline" className="w-fit border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white"><Link to="/financing/tools">Explore financing tools <ArrowUpRight className="h-4 w-4" /></Link></Button></div>
           </div>
         </div>
+      </section>
+
+      <section className="bg-secondary py-24">
+        <div className="container"><div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div className="max-w-2xl"><span className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-gold">Development focus</span><h2 className="mt-3 font-display text-4xl font-semibold text-brand-navy sm:text-5xl">Capital aligned to real-world outcomes</h2><p className="mt-4 text-sm leading-relaxed text-muted-foreground">Explore the sectors and project stories our financing conversations are designed to support.</p></div><Link to="/financing/tools" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-navy hover:text-brand-gold">Plan an opportunity <ArrowUpRight className="h-4 w-4" /></Link></div><div className="mt-10 grid gap-5 md:grid-cols-2">{sectors.map((sector) => <Link key={sector.kind} to="/financing/tools" className="group overflow-hidden rounded-xl border border-border bg-background transition-all hover:-translate-y-1 hover:border-brand-gold/60 hover:shadow-xl hover:shadow-brand-navy/5"><div className="h-40 bg-brand-navy px-6 pt-3"><SectorArtwork kind={sector.kind} /></div><div className="p-6"><h3 className="font-display text-2xl font-semibold text-brand-navy">{sector.label}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{sector.text}</p><span className="mt-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-brand-navy group-hover:text-brand-gold">Explore preparation tools <ArrowUpRight className="h-3.5 w-3.5" /></span></div></Link>)}</div></div>
       </section>
 
       {/* Careers panel */}
