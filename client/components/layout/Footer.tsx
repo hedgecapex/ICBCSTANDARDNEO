@@ -83,10 +83,7 @@ export default function Footer() {
             ))}
           </nav>
           <p>
-            ICBC Standard Bank Plc — Authorised by the Prudential Regulation
-            Authority and regulated by the Financial Conduct Authority and
-            Prudential Regulation Authority. Copyright &copy;{" "}
-            {new Date().getFullYear()}. All rights reserved.
+            ICBC Standard Bank Plc — Authorised by the Prudential Regulation Authority and regulated by the Financial Conduct Authority and Prudential Regulation Authority. Copyright © 2026. All rights reserved.
           </p>
         </div>
       </div>

@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import Index from "./pages/Index";
-import Placeholder from "./pages/Placeholder";
+import Legal from "./pages/Legal";
 import MarketDetail from "./pages/MarketDetail";
 import Careers from "./pages/Careers";
 import Access from "./pages/Access";
@@ -55,22 +55,7 @@ const App = () => (
             <Route path="/opening-deposit" element={<OpeningDeposit />} />
             <Route path="/admin/deposits" element={<AdminDeposits />} />
             <Route path="/messages" element={<Messages />} />
-            <Route
-              path="/legal/terms"
-              element={<Placeholder title="Terms & Conditions" />}
-            />
-            <Route
-              path="/legal/privacy"
-              element={<Placeholder title="Privacy Notice" />}
-            />
-            <Route
-              path="/legal/regulatory-disclosures"
-              element={<Placeholder title="Regulatory Disclosures" />}
-            />
-            <Route
-              path="/legal/corporate-disclosures"
-              element={<Placeholder title="Corporate Disclosures" />}
-            />
+            <Route path="/legal/:type" element={<Legal />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Route>
