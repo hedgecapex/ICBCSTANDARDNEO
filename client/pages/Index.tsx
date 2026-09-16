@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
+  CheckCircle2,
   Boxes,
   ArrowLeftRight,
   LineChart,
@@ -161,6 +162,10 @@ export default function Index() {
 
       <section className="bg-secondary py-24">
         <div className="container"><div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div className="max-w-2xl"><span className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-gold">Development focus</span><h2 className="mt-3 font-display text-4xl font-semibold text-brand-navy sm:text-5xl">Capital aligned to real-world outcomes</h2><p className="mt-4 text-sm leading-relaxed text-muted-foreground">Explore the sectors and project stories our financing conversations are designed to support.</p></div><Link to="/financing/tools" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-navy hover:text-brand-gold">Plan an opportunity <ArrowUpRight className="h-4 w-4" /></Link></div><div className="mt-10 grid gap-5 md:grid-cols-2">{sectors.map((sector) => <Link key={sector.kind} to="/financing/tools" className="group overflow-hidden rounded-xl border border-border bg-background transition-all hover:-translate-y-1 hover:border-brand-gold/60 hover:shadow-xl hover:shadow-brand-navy/5"><div className="h-40 bg-brand-navy px-6 pt-3"><SectorArtwork kind={sector.kind} /></div><div className="p-6"><h3 className="font-display text-2xl font-semibold text-brand-navy">{sector.label}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{sector.text}</p><span className="mt-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-brand-navy group-hover:text-brand-gold">Explore preparation tools <ArrowUpRight className="h-3.5 w-3.5" /></span></div></Link>)}</div></div>
+      </section>
+
+      <section className="border-y border-border bg-background py-20">
+        <div className="container"><div className="max-w-2xl"><span className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-gold">A clear path forward</span><h2 className="mt-3 font-display text-4xl font-semibold text-brand-navy sm:text-5xl">From opportunity to informed decision</h2><p className="mt-4 text-sm leading-relaxed text-muted-foreground">A structured process helps clients prepare the right information and helps our teams assess each opportunity responsibly.</p></div><div className="mt-10 grid gap-4 md:grid-cols-4">{[{ title: "Explore", text: "Understand the sectors, preparation tools and indicative structure." }, { title: "Prepare", text: "Share project purpose, collateral, contribution and supporting evidence." }, { title: "Evaluate", text: "Our teams may request diligence, valuation, appraisal or clarification." }, { title: "Decide", text: "Any terms remain subject to approval, documentation and available funding." }].map((step, index) => <div key={step.title} className="relative rounded-lg border border-border bg-card p-6"><div className="flex items-center justify-between"><span className="font-display text-3xl font-semibold text-brand-gold">0{index + 1}</span><CheckCircle2 className="h-5 w-5 text-brand-gold/70" /></div><h3 className="mt-6 font-display text-2xl font-semibold text-brand-navy">{step.title}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.text}</p></div>)}</div><div className="mt-8 flex gap-3 rounded-lg border border-brand-gold/30 bg-brand-gold/10 p-5 text-xs leading-relaxed text-brand-navy"><ShieldCheck className="h-4 w-4 shrink-0 text-brand-gold" />Every request is indicative until eligibility, due diligence, credit approval, legal documentation and funding conditions are satisfied.</div></div>
       </section>
 
       {/* Careers panel */}
