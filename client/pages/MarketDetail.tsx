@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowUpRight, Check, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Check, ShieldCheck, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { marketLinks } from "@/lib/site-data";
 import SectorArtwork from "@/components/brand/SectorArtwork";
@@ -72,6 +72,16 @@ export default function MarketDetail() {
           <ul className="mt-5 space-y-4">
             {detail.capabilities.map((capability) => <li key={capability} className="flex items-center gap-3 text-sm text-muted-foreground"><Check className="h-4 w-4 text-brand-gold" />{capability}</li>)}
           </ul>
+        </div>
+      </section>
+
+      <section className="border-y border-border bg-background py-12">
+        <div className="container flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex gap-3">
+            <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-brand-gold" />
+            <div><p className="text-sm font-semibold text-brand-navy">A disciplined path from market need to financing review</p><p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">Initial conversations are followed by eligibility checks, due diligence and documentation. Any financing remains subject to credit approval, applicable law and available funding.</p></div>
+          </div>
+          <Button asChild variant="outline" className="w-fit shrink-0 border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white"><Link to="/financing/tools">Prepare an opportunity <ArrowUpRight className="h-4 w-4" /></Link></Button>
         </div>
       </section>
 
