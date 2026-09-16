@@ -11,6 +11,7 @@ const details = {
     intro: "Trusted access to the world's essential commodities markets.",
     body: "Our commodities team combines on-the-ground knowledge with global reach to help clients navigate complex physical and financial markets. We build practical solutions around the moments that matter to your business.",
     capabilities: ["Metals and minerals", "Energy and renewables", "Agricultural products", "Structured trade solutions"],
+    preparation: ["Underlying contracts or trade flow", "Collateral, inventory or receivables evidence", "Currency, settlement and repayment assumptions"],
   },
   "foreign-exchange": {
     eyebrow: "Global currencies",
@@ -18,6 +19,7 @@ const details = {
     intro: "Clear thinking and precise execution in every currency.",
     body: "Our experienced FX specialists provide a direct, informed perspective across developed and emerging markets. From everyday hedging to bespoke structures, our solutions are designed around your objectives.",
     capabilities: ["Spot and forward execution", "Currency hedging", "Emerging market currencies", "Bespoke structured solutions"],
+    preparation: ["Exposure, tenor and settlement currency", "Hedging policy and existing obligations", "Cash-flow evidence and repayment assumptions"],
   },
   "fixed-income": {
     eyebrow: "Rates and credit",
@@ -25,6 +27,7 @@ const details = {
     intro: "Solutions shaped by a deep understanding of rates, credit and risk.",
     body: "Our fixed income team constructs customised solutions using a combination of interest rate, currency and credit products. We help clients find clarity and opportunity through changing market cycles.",
     capabilities: ["Rates and swaps", "Credit products", "Emerging market debt", "Portfolio solutions"],
+    preparation: ["Funding need and maturity profile", "Existing debt and covenant information", "Interest-rate and repayment sensitivity"],
   },
   "primary-markets": {
     eyebrow: "Capital formation",
@@ -32,6 +35,7 @@ const details = {
     intro: "Full-service origination for ambitious issuers.",
     body: "Our debt capital markets teams offer full-service origination, execution and syndication capabilities. We pair deep market relationships with disciplined advice to help issuers access capital with confidence.",
     capabilities: ["Debt origination", "Syndication", "Private placements", "Issuer advisory"],
+    preparation: ["Issuer objectives and capital structure", "Financial statements and transaction rationale", "Target investors, timing and approvals"],
   },
 } as const;
 
@@ -73,6 +77,10 @@ export default function MarketDetail() {
             {detail.capabilities.map((capability) => <li key={capability} className="flex items-center gap-3 text-sm text-muted-foreground"><Check className="h-4 w-4 text-brand-gold" />{capability}</li>)}
           </ul>
         </div>
+      </section>
+
+      <section className="border-y border-border bg-secondary py-16">
+        <div className="container"><div className="max-w-2xl"><p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-gold">Preparation lens</p><h2 className="mt-2 font-display text-3xl font-semibold text-brand-navy">Bring the right context to the first conversation</h2><p className="mt-3 text-sm leading-relaxed text-muted-foreground">The strongest initial discussions make the commercial objective, risk context and supporting evidence easy to understand.</p></div><div className="mt-7 grid gap-4 md:grid-cols-3">{detail.preparation.map((item, index) => <div key={item} className="rounded-lg border border-border bg-background p-5"><span className="font-display text-2xl font-semibold text-brand-gold">0{index + 1}</span><p className="mt-4 text-sm font-medium leading-relaxed text-brand-navy">{item}</p></div>)}</div></div>
       </section>
 
       <section className="border-y border-border bg-background py-12">
