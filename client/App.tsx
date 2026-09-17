@@ -8,7 +8,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
-import Index from "./pages/Index";
+const Index = lazy(() => import("./pages/Index"));
 const Legal = lazy(() => import("./pages/Legal"));
 const MarketDetail = lazy(() => import("./pages/MarketDetail"));
 const Careers = lazy(() => import("./pages/Careers"));
