@@ -262,6 +262,11 @@ export default function Index() {
                   <p className="mt-1 text-sm text-muted-foreground">
                     {office.country}
                   </p>
+                  {"address" in office && (
+                    <p className="mt-2 text-xs leading-relaxed text-muted-foreground/80">
+                      {office.address}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
