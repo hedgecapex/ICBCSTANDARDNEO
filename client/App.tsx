@@ -1,5 +1,6 @@
 import "./global.css";
 
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { createRoot } from "react-dom/client";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -8,24 +9,24 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import Index from "./pages/Index";
-import Legal from "./pages/Legal";
-import MarketDetail from "./pages/MarketDetail";
-import Careers from "./pages/Careers";
-import Access from "./pages/Access";
-import Dashboard from "./pages/Dashboard";
-import Registration from "./pages/Registration";
-import AdminApplications from "./pages/AdminApplications";
-import FinancingApplication from "./pages/FinancingApplication";
-import FinancingTools from "./pages/FinancingTools";
-import AdminFinancing from "./pages/AdminFinancing";
-import ClientFinancing from "./pages/ClientFinancing";
-import AdminNotifications from "./pages/AdminNotifications";
-import AdminAudit from "./pages/AdminAudit";
-import ApplicationStatus from "./pages/ApplicationStatus";
-import OpeningDeposit from "./pages/OpeningDeposit";
-import AdminDeposits from "./pages/AdminDeposits";
-import Messages from "./pages/Messages";
-import NotFound from "./pages/NotFound";
+const Legal = lazy(() => import("./pages/Legal"));
+const MarketDetail = lazy(() => import("./pages/MarketDetail"));
+const Careers = lazy(() => import("./pages/Careers"));
+const Access = lazy(() => import("./pages/Access"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Registration = lazy(() => import("./pages/Registration"));
+const AdminApplications = lazy(() => import("./pages/AdminApplications"));
+const FinancingApplication = lazy(() => import("./pages/FinancingApplication"));
+const FinancingTools = lazy(() => import("./pages/FinancingTools"));
+const AdminFinancing = lazy(() => import("./pages/AdminFinancing"));
+const ClientFinancing = lazy(() => import("./pages/ClientFinancing"));
+const AdminNotifications = lazy(() => import("./pages/AdminNotifications"));
+const AdminAudit = lazy(() => import("./pages/AdminAudit"));
+const ApplicationStatus = lazy(() => import("./pages/ApplicationStatus"));
+const OpeningDeposit = lazy(() => import("./pages/OpeningDeposit"));
+const AdminDeposits = lazy(() => import("./pages/AdminDeposits"));
+const Messages = lazy(() => import("./pages/Messages"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
@@ -35,7 +36,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
+        <Suspense fallback={<div className="flex min-h-[60vh] items-center justify-center bg-secondary text-sm text-muted-foreground">Loading page…</div>}>
+          <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Index />} />
             <Route path="/markets/:market" element={<MarketDetail />} />
@@ -59,7 +61,8 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Route>
-        </Routes>
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
