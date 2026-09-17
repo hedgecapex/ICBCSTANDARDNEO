@@ -38,7 +38,7 @@ export const primaryNav = [
 
 export const offices = [
   { city: "New York", country: "United States" },
-  { city: "Zurich", country: "Switzerland" },
+  { city: "Zurich", country: "Switzerland", address: "Bahnhofplatz, 11 Bahnofquai, Zurich 8001 Switzerland" },
   { city: "Dubai", country: "United Arab Emirates" },
   { city: "Manama", country: "Bahrain" },
 ];

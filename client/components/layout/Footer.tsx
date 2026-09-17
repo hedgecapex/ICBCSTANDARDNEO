@@ -60,7 +60,8 @@ export default function Footer() {
               <li key={office.city} className="flex items-start gap-2">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand-gold" />
                 <span>
-                  {office.city}, {office.country}
+                  <span>{office.city}, {office.country}</span>
+                  {"address" in office && <span className="mt-1 block text-xs text-white/50">{office.address}</span>}
                 </span>
               </li>
             ))}
