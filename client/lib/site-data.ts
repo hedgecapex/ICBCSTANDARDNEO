@@ -40,7 +40,7 @@ export const offices = [
   { city: "New York", country: "United States" },
   { city: "Zurich", country: "Switzerland", address: "Bahnhofplatz, 11 Bahnofquai, Zurich 8001 Switzerland" },
   { city: "Dubai", country: "United Arab Emirates" },
-  { city: "Manama", country: "Bahrain" },
+  { city: "Manama", country: "Bahrain", address: "Bahrain Financial Habour, Manama Sea Front 346, Manama, Bahrain" },
 ];
 
 export const legalLinks = [
