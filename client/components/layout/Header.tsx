@@ -68,22 +68,28 @@ export default function Header() {
 
         <button
           type="button"
-          className="inline-flex items-center justify-center rounded-sm p-2 text-white lg:hidden"
+          className="inline-flex items-center justify-center rounded-sm p-2 text-white outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-gold lg:hidden"
           onClick={() => setOpen((v) => !v)}
-          aria-label="Toggle navigation menu"
+          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={open}
+          aria-controls="mobile-navigation"
         >
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
 
       {open && (
-        <div className="border-t border-white/10 bg-brand-navy lg:hidden">
-          <nav className="container flex flex-col gap-1 py-4">
+        <div id="mobile-navigation" className="border-t border-white/10 bg-brand-navy lg:hidden">
+          <nav aria-label="Mobile navigation" className="container flex flex-col gap-1 py-4">
             {primaryNav.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className="rounded-sm px-2 py-3 text-sm font-medium text-white/85 hover:bg-white/5 hover:text-brand-gold"
+                className={cn(
+                  "rounded-sm px-2 py-3 text-sm font-medium text-white/85 hover:bg-white/5 hover:text-brand-gold",
+                  location.pathname === item.path && "bg-white/5 text-brand-gold",
+                )}
+                aria-current={location.pathname === item.path ? "page" : undefined}
                 onClick={() => setOpen(false)}
               >
                 {item.label}
